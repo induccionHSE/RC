@@ -3,459 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PBI SIG 2025 | Revisión Gerencial</title>
+    <title>Acta Revisión Gerencial SIG 2025 | PBI SAS ESP</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            /* PALETA CORPORATIVA OIL & GAS */
-            --primary-dark: #0b1a2a;  /* Azul Petróleo Profundo */
-            --primary-light: #162a3f; /* Azul Corporativo */
-            --accent: #f39c12;        /* Dorado/Naranja (Energía) */
-            --text-light: #ecf0f1;
-            --text-dim: #bdc3c7;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --warning: #f1c40f;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border: 1px solid rgba(255, 255, 255, 0.1);
+            /* COLORES CORPORATIVOS */
+            --primary: #003366;      /* Azul Oscuro Institucional */
+            --secondary: #00509d;    /* Azul Medio */
+            --accent: #fdc500;       /* Dorado/Amarillo Seguridad */
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --bg-body: #f1f5f9;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #050505 0%, #0b1a2a 100%);
-            color: var(--text-light);
-            height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
             display: flex;
+            height: 100vh;
             overflow: hidden;
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR DE NAVEGACIÓN --- */
         .sidebar {
-            width: 280px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-right: var(--border);
+            width: 320px;
+            background: var(--primary);
+            color: white;
             display: flex; flex-direction: column;
-            padding: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
             z-index: 100;
         }
 
-        .logo-container {
-            margin-bottom: 40px; padding-bottom: 20px; border-bottom: var(--border);
-            display: flex; align-items: center; gap: 10px;
+        .logo-area {
+            padding: 30px 20px;
+            background: rgba(0,0,0,0.1);
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .logo-placeholder {
-            width: 40px; height: 40px; background: var(--accent); border-radius: 6px;
-            display: grid; place-items: center; font-weight: bold; color: #000;
+        
+        /* AQUI VA TU LOGO */
+        .logo-img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 10px;
+            background: white; /* Fondo blanco para que resalte si es PNG transparente */
+            padding: 10px;
+            border-radius: 8px;
         }
-        .company-name { font-size: 18px; font-weight: 800; letter-spacing: 1px; line-height: 1.1; }
-        .company-name span { color: var(--accent); display: block; font-size: 10px; font-weight: 400; letter-spacing: 2px;}
 
-        .nav-menu { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; }
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
         .nav-item {
-            padding: 14px 15px; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s ease; color: var(--text-dim);
-            font-size: 13px; display: flex; align-items: center; gap: 12px;
-            border-left: 3px solid transparent;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            font-size: 14px;
+            display: flex; align-items: center; gap: 10px;
+            color: rgba(255,255,255,0.7);
         }
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
         .nav-item.active {
-            background: linear-gradient(90deg, rgba(243, 156, 18, 0.15) 0%, transparent 100%);
-            color: var(--accent);
-            border-left: 3px solid var(--accent);
-            font-weight: 600;
+            background: rgba(0,0,0,0.2);
+            border-left-color: var(--accent);
+            color: white;
+            font-weight: 700;
         }
-        .nav-icon { width: 20px; text-align: center; }
+        .nav-icon { width: 24px; text-align: center; }
 
-        /* --- MAIN CONTENT --- */
-        .main { flex: 1; padding: 30px 40px; overflow-y: auto; position: relative; }
-
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .page-title h1 { font-size: 28px; font-weight: 700; }
-        .page-title p { color: var(--text-dim); font-size: 12px; margin-top: 5px; letter-spacing: 1px; }
-        .status-badge {
-            background: rgba(39, 174, 96, 0.2); color: var(--success);
-            padding: 8px 16px; border-radius: 30px; font-size: 11px; font-weight: 700;
-            border: 1px solid rgba(39, 174, 96, 0.4); display: flex; align-items: center; gap: 6px;
+        .footer-info {
+            padding: 20px;
+            font-size: 11px;
+            text-align: center;
+            opacity: 0.5;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* --- GRID SYSTEM --- */
-        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Encabezado de Página */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;
+        }
+        .doc-title h1 { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--primary); letter-spacing: 1px; }
+        .doc-title span { font-family: 'Roboto', sans-serif; font-size: 14px; color: #64748b; font-weight: 500; }
+        
+        .status-pill {
+            background: #dcfce7; color: #166534;
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            border: 1px solid #bbf7d0; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* Estilos de Tarjetas y Grid */
+        .section-view { display: none; animation: fadeIn 0.4s ease; }
+        .section-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-container { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-bottom: 20px; }
         .col-3 { grid-column: span 3; }
         .col-4 { grid-column: span 4; }
         .col-6 { grid-column: span 6; }
         .col-8 { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
 
-        /* --- CARDS --- */
         .card {
-            background: var(--card-bg); border: var(--border); border-radius: 12px; padding: 25px;
-            position: relative; overflow: hidden; transition: transform 0.3s;
+            background: white; border-radius: 8px; padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0; height: 100%;
         }
-        .card:hover { border-color: rgba(255,255,255,0.2); }
-        .card-header {
-            text-transform: uppercase; font-size: 11px; font-weight: 700; color: var(--accent);
-            margin-bottom: 15px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
+        .card-title {
+            font-size: 12px; font-weight: 800; text-transform: uppercase; color: #64748b;
+            margin-bottom: 15px; letter-spacing: 0.5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;
         }
-        
-        /* --- ELEMENTS --- */
-        .big-number { font-size: 42px; font-weight: 800; color: #fff; margin: 10px 0; }
-        .sub-text { font-size: 12px; color: var(--text-dim); }
-        
-        .trend-up { color: var(--success); font-size: 12px; font-weight: bold; }
-        .trend-down { color: var(--danger); font-size: 12px; font-weight: bold; }
 
-        /* TABLES */
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; padding: 10px; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .pill { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .bg-ok { background: rgba(39, 174, 96, 0.2); color: var(--success); }
-        .bg-warn { background: rgba(241, 196, 15, 0.2); color: var(--warning); }
-        .bg-err { background: rgba(192, 57, 43, 0.2); color: var(--danger); }
+        /* Tablas */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th { text-align: left; padding: 10px; background: #f8fafc; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        .data-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        /* Etiquetas de Estado */
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .tag-ok { background: #dcfce7; color: #166534; }
+        .tag-warn { background: #fef9c3; color: #854d0e; }
+        .tag-err { background: #fee2e2; color: #991b1b; }
+        .tag-info { background: #e0f2fe; color: #075985; }
+
+        /* Elementos Específicos */
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .info-label { font-weight: 600; color: #475569; }
         
-        /* SECTIONS ANIMATION */
-        .section { display: none; animation: fadeUp 0.5s ease; }
-        .section.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .kpi-box { text-align: center; padding: 10px; }
+        .kpi-val { font-size: 36px; font-weight: 900; color: var(--primary); line-height: 1; margin: 5px 0; }
+        .kpi-sub { font-size: 11px; color: #64748b; }
 
-        /* SPECIFIC WIDGETS */
-        .timeline-item { padding-left: 15px; border-left: 2px solid var(--accent); margin-bottom: 15px; }
-        .timeline-item h4 { font-size: 14px; color: #fff; margin-bottom: 3px; }
-        .timeline-item p { font-size: 12px; color: var(--text-dim); }
+        .dofa-item { padding: 10px; margin-bottom: 8px; border-radius: 6px; font-size: 12px; }
+        .dofa-green { background: #f0fdf4; border-left: 3px solid var(--success); }
+        .dofa-red { background: #fef2f2; border-left: 3px solid var(--danger); }
 
-        .alert-box {
-            background: rgba(192, 57, 43, 0.1); border-left: 4px solid var(--danger); padding: 15px;
-            margin-top: 10px; border-radius: 4px;
-        }
+        /* Firmas */
+        .signature-box { margin-top: 40px; display: flex; justify-content: center; gap: 60px; }
+        .sign-line { border-top: 1px solid #334155; width: 220px; padding-top: 10px; text-align: center; font-size: 12px; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="logo-container">
-            <div class="logo-placeholder"><i class="fa-solid fa-droplet"></i></div>
-            <div class="company-name">PBI S.A.S<span style="margin-top:2px;">SISTEMA INTEGRADO</span></div>
+        <div class="logo-area">
+            <img src="https://i.postimg.cc/HxNY0y19/placeholder-logo.png" alt="Logo PBI" class="logo-img" id="companyLogo">
+            <h3 style="font-size:16px;">PBI S.A.S. ESP</h3>
+            <p style="font-size:11px; opacity:0.7;">Sistema Integrado de Gestión</p>
         </div>
 
         <div class="nav-menu">
-            <div class="nav-item active" onclick="nav(1, this)">
-                <div class="nav-icon"><i class="fa-solid fa-house"></i></div> 1. Información General
+            <div class="nav-item active" onclick="navigate(1, this)">
+                <div class="nav-icon"><i class="fa-solid fa-circle-info"></i></div> 1. Información General
             </div>
-            <div class="nav-item" onclick="nav(2, this)">
-                <div class="nav-icon"><i class="fa-solid fa-list-check"></i></div> 2. Compromisos
+            <div class="nav-item" onclick="navigate(2, this)">
+                <div class="nav-icon"><i class="fa-solid fa-tasks"></i></div> 2. Compromisos 2024
             </div>
-            <div class="nav-item" onclick="nav(3, this)">
-                <div class="nav-icon"><i class="fa-solid fa-chess"></i></div> 3. Estrategia (KPIs)
+            <div class="nav-item" onclick="navigate(3, this)">
+                <div class="nav-icon"><i class="fa-solid fa-chess"></i></div> 3. Estrategia y Contexto
             </div>
-            <div class="nav-item" onclick="nav(4, this)">
-                <div class="nav-icon"><i class="fa-solid fa-helmet-safety"></i></div> 4. Operaciones
+            <div class="nav-item" onclick="navigate(4, this)">
+                <div class="nav-icon"><i class="fa-solid fa-industry"></i></div> 4. Entradas Operacionales
             </div>
-            <div class="nav-item" onclick="nav(5, this)">
-                <div class="nav-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div> 5. Verificación
+            <div class="nav-item" onclick="navigate(5, this)">
+                <div class="nav-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div> 5. Verificación (Hallazgos)
             </div>
-            <div class="nav-item" onclick="nav(6, this)">
-                <div class="nav-icon"><i class="fa-solid fa-money-bill-wave"></i></div> 6. Decisiones
+            <div class="nav-item" onclick="navigate(6, this)">
+                <div class="nav-icon"><i class="fa-solid fa-file-signature"></i></div> 6. Decisiones (Salidas)
             </div>
         </div>
-        
-        <div style="margin-top:auto; font-size:10px; color:var(--text-dim); text-align:center; opacity:0.5;">
-            CONFIDENCIAL<br>FOR-GER-02 v.2025
+
+        <div class="footer-info">
+            Código: FOR-GER-02<br>
+            Versión: 2025<br>
+            Fecha: 30/01/2026
         </div>
     </div>
 
     <div class="main">
-        <div class="top-bar">
-            <div class="page-title">
-                <h1>Informe Gerencial 2025</h1>
-                <p>Revisión por la Dirección ISO 9001 - 14001 - 45001</p>
+        <div class="page-header">
+            <div class="doc-title">
+                <h1>Acta de Revisión Gerencial</h1>
+                <span>Evaluación del Periodo: Enero 2025 – Diciembre 2025</span>
             </div>
-            <div class="status-badge"><i class="fa-solid fa-check"></i> SISTEMA ACTIVO</div>
+            <div class="status-pill"><i class="fa-solid fa-check"></i> ESTADO: FINALIZADA</div>
         </div>
 
-        <div id="sec1" class="section active">
-            <div class="grid">
-                <div class="card col-4">
-                    <div class="card-header">FECHA REVISIÓN</div>
-                    <div class="big-number" style="font-size:32px;">30 ENE</div>
-                    <div class="sub-text">2026 | 08:00 AM</div>
-                </div>
-                <div class="card col-4">
-                    <div class="card-header">UBICACIÓN</div>
-                    <div style="font-size:20px; font-weight:bold; margin:10px 0;">Bogotá D.C.</div>
-                    <div class="sub-text">Sala de Juntas Administración</div>
-                </div>
-                <div class="card col-4">
-                    <div class="card-header">LIDERAZGO</div>
-                    <div style="font-size:13px; line-height:1.8;">
-                        <i class="fa-solid fa-user-tie" style="color:var(--accent)"></i> L. Henriquez (Gerente)<br>
-                        <i class="fa-solid fa-user-gear" style="color:var(--accent)"></i> C. Esteban (Dir. HSEQ)<br>
-                        <i class="fa-solid fa-user" style="color:var(--accent)"></i> H. Moreno (Coord. HSEQ)
+        <div id="sec1" class="section-view active">
+            <div class="grid-container">
+                <div class="card col-12">
+                    <div class="card-title">1. INFORMACIÓN GENERAL DE LA REVISIÓN</div>
+                    <div class="grid-container">
+                        <div class="col-4">
+                            <div class="info-row"><span class="info-label">Fecha:</span> 30/01/2026</div>
+                            <div class="info-row"><span class="info-label">Hora:</span> 8:00 am – 10:00 am</div>
+                            <div class="info-row"><span class="info-label">Lugar:</span> Sala Juntas Admin. Bogotá</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="info-label" style="margin-bottom:5px;">Asistentes:</div>
+                            <ul style="font-size:13px; padding-left:20px; line-height:1.6;">
+                                <li>Luis Eduardo Henriquez (Gerente General)</li>
+                                <li>Carlos Esteban (Director HSEQ)</li>
+                                <li>Holman Moreno (Coordinador HSEQ)</li>
+                            </ul>
+                        </div>
+                        <div class="col-4">
+                            <div class="info-label" style="margin-bottom:5px;">Propósito:</div>
+                            <p style="font-size:13px; color:#334155;">Verificar la conveniencia, adecuación, eficacia y alineación estratégica del Sistema Integrado de Gestión (ISO 9001, 14001, 45001, Dec. 1072, PESV).</p>
+                        </div>
                     </div>
                 </div>
-                <div class="card col-12">
-                    <div class="card-header">PROPÓSITO</div>
-                    <p style="font-size:14px; line-height:1.6; color:#ddd;">Verificar la conveniencia, adecuación, eficacia y alineación estratégica del Sistema Integrado de Gestión bajo las normas ISO y Dec. 1072, analizando el periodo Ene-Dic 2025.</p>
-                </div>
             </div>
         </div>
 
-        <div id="sec2" class="section">
+        <div id="sec2" class="section-view">
             <div class="card">
-                <div class="card-header">SEGUIMIENTO A COMPROMISOS ANTERIORES (2024)</div>
-                <table>
+                <div class="card-title">2. SEGUIMIENTO A COMPROMISOS PREVIOS (2024)</div>
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Compromiso</th>
+                            <th>Compromiso / Actividad</th>
                             <th>Responsable</th>
-                            <th>Estado</th>
-                            <th>Gestión / Evolución</th>
+                            <th>Estado 2025</th>
+                            <th>Observaciones / Gestión del Cambio</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Software ISOLUCION</td>
                             <td>Dir. HSEQ</td>
-                            <td><span class="pill bg-ok">EJECUTADO</span></td>
-                            <td>Gestión del Cambio: Se desarrolló herramienta interna en <strong>AppScript</strong> (Ahorro costos).</td>
+                            <td><span class="tag tag-ok">EJECUTADO</span></td>
+                            <td><strong>Gestión del Cambio:</strong> Se desestimó ISOLUCION. Se implementó automatización interna con Appscript y Google.</td>
                         </tr>
                         <tr>
-                            <td>Dashboards KPI</td>
-                            <td>HSEQ</td>
-                            <td><span class="pill bg-ok">EJECUTADO</span></td>
-                            <td>Implementación de Power BI / Paneles de Control.</td>
+                            <td>Dashboards/KPIs</td>
+                            <td>Área HSEQ</td>
+                            <td><span class="tag tag-ok">EJECUTADO</span></td>
+                            <td>Se cuenta con paneles de control que facilitan la toma de decisiones.</td>
                         </tr>
                         <tr>
                             <td>Cultura HSEQ</td>
                             <td>Dir. HSEQ</td>
-                            <td><span class="pill bg-warn">PARCIAL</span></td>
-                            <td>Se requieren nuevas estrategias de incentivos (Ver Cap. 4).</td>
+                            <td><span class="tag tag-warn">PARCIAL</span></td>
+                            <td>Se requieren nuevas estrategias para 2026 (Ver Análisis de Participación).</td>
                         </tr>
                         <tr>
                             <td>Certificación ISO 50001</td>
+                            <td>Dir. HSEQ</td>
+                            <td><span class="tag tag-err">NO INICIADO</span></td>
+                            <td>Se reprograma o reevalúa su pertinencia para el siguiente periodo.</td>
+                        </tr>
+                        <tr>
+                            <td>Visitas Gerenciales 360°</td>
                             <td>Gerencia</td>
-                            <td><span class="pill bg-err">NO INICIADO</span></td>
-                            <td>Reprogramado para análisis 2026.</td>
+                            <td><span class="tag tag-warn">PENDIENTE</span></td>
+                            <td>Se realizaron visitas parciales; fortalecer cronograma 2026.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="sec3" class="section">
-            <div class="grid">
+        <div id="sec3" class="section-view">
+            <div class="grid-container">
                 <div class="card col-6">
-                    <div class="card-header">ANÁLISIS DE CONTEXTO (DOFA)</div>
-                    <div class="timeline-item">
-                        <h4 style="color:var(--success)">OPORTUNIDADES (Externas)</h4>
-                        <p>Incentivos Transición Energética & Tecnologías IoT.</p>
+                    <div class="card-title">3.1 CONTEXTO (DOFA SEP-2025)</div>
+                    <div class="dofa-item dofa-green">
+                        <strong>FORTALEZAS:</strong> Liderazgo en Transformación Digital (IA en HSEQ), Resiliencia Operativa (0 Accidentes).
                     </div>
-                    <div class="timeline-item">
-                        <h4 style="color:var(--success)">FORTALEZAS (Internas)</h4>
-                        <p>Liderazgo en Transformación Digital & 0 Accidentes.</p>
+                    <div class="dofa-item dofa-green">
+                        <strong>OPORTUNIDADES:</strong> Incentivos Transición Energética, Mercados Regionales, Monitoreo Remoto.
                     </div>
-                    <div class="timeline-item" style="border-color:var(--danger)">
-                        <h4 style="color:var(--danger)">AMENAZAS (Riesgos)</h4>
-                        <p>Volatilidad TRM, Bloqueos Sociales y Ciberseguridad.</p>
+                    <div class="dofa-item dofa-red">
+                        <strong>DEBILIDADES:</strong> Flujo de caja para inversiones, Brechas digitales, Dependencia pozos maduros.
+                    </div>
+                    <div class="dofa-item dofa-red">
+                        <strong>AMENAZAS:</strong> Volatilidad Macroeconómica (TRM), Bloqueos Sociales, Nuevas exigencias ambientales.
                     </div>
                 </div>
 
                 <div class="card col-6">
-                    <div class="card-header">CUMPLIMIENTO OBJETIVOS 2025</div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-                        <div>Satisfacción Cliente</div>
-                        <div style="text-align:right;"><span class="trend-up">86%</span> <span style="font-size:10px; color:#aaa;">(Meta >85%)</span></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-                        <div>Accidentalidad (IF)</div>
-                        <div style="text-align:right;"><span class="trend-up" style="color:var(--success)">0.00</span> <span style="font-size:10px; color:#aaa;">(Meta <1.0)</span></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-                        <div>Cumplimiento Legal</div>
-                        <div style="text-align:right;"><span class="trend-up">97.7%</span> <span style="font-size:10px; color:#aaa;">(Meta 100%)</span></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <div>Cierre Hallazgos</div>
-                        <div style="text-align:right;"><span class="trend-down">85%</span> <span style="font-size:10px; color:#aaa;">(Meta >90%)</span></div>
-                    </div>
+                    <div class="card-title">3.4 CUMPLIMIENTO DE OBJETIVOS SIG</div>
+                    <table class="data-table">
+                        <tr>
+                            <td>Competencia Personal</td>
+                            <td><span class="tag tag-ok">CUMPLE</span></td>
+                            <td align="right">100%</td>
+                        </tr>
+                        <tr>
+                            <td>Prevención SST (IF)</td>
+                            <td><span class="tag tag-ok">CUMPLE</span></td>
+                            <td align="right">0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Cumplimiento Legal</td>
+                            <td><span class="tag tag-ok">CUMPLE</span></td>
+                            <td align="right">100%</td>
+                        </tr>
+                        <tr>
+                            <td>Satisfacción Cliente</td>
+                            <td><span class="tag tag-ok">CUMPLE</span></td>
+                            <td align="right">86%</td>
+                        </tr>
+                        <tr>
+                            <td>Mejora Continua</td>
+                            <td><span class="tag tag-err">NO CUMPLE</span></td>
+                            <td align="right">85%</td>
+                        </tr>
+                    </table>
                 </div>
+            </div>
+            
+            <div class="card col-12" style="margin-top:20px;">
+                <div class="card-title">3.3 GESTIÓN DE RIESGOS</div>
+                <p style="font-size:13px;"><strong>Eficacia:</strong> Los controles funcionaron eficazmente. No se materializaron riesgos corporativos críticos (soborno, paro armado).<br>
+                <strong>Gestión 2026:</strong> Se mantendrá el enfoque preventivo en Ciberseguridad y Conflictividad Social.</p>
             </div>
         </div>
 
-        <div id="sec4" class="section">
-            <div class="grid">
+        <div id="sec4" class="section-view">
+            <div class="grid-container">
                 <div class="card col-8">
-                    <div class="card-header">4.1 SATISFACCIÓN CLIENTE</div>
-                    <canvas id="chartSat" height="100"></canvas>
+                    <div class="card-title">4.1 DESEMPEÑO COMERCIAL (Top Clientes)</div>
+                    <canvas id="chartClientes" height="100"></canvas>
                 </div>
                 <div class="card col-4">
-                    <div class="card-header">FEEDBACK CRÍTICO</div>
-                    <div style="background:rgba(255,255,255,0.1); padding:15px; border-radius:6px; margin-bottom:10px;">
-                        <strong style="color:var(--warning); font-size:12px;">INFRAES (3.0/5.0)</strong>
-                        <p style="font-size:12px; margin-top:5px;">"Muy reactivos. Necesitamos migrar a <strong>Mantenimiento Predictivo</strong>."</p>
+                    <div class="card-title">VOZ DEL CLIENTE</div>
+                    <div style="background:#fefce8; padding:10px; border-left:3px solid #eab308; margin-bottom:10px;">
+                        <strong style="font-size:11px; color:#854d0e;">INFRAES (3.0/5.0)</strong>
+                        <p style="font-size:12px; margin-top:5px;">"Necesidad de migrar a Mantenimiento Predictivo y mejorar stock de repuestos."</p>
                     </div>
-                    <div style="background:rgba(255,255,255,0.1); padding:15px; border-radius:6px;">
-                        <strong style="color:var(--success); font-size:12px;">VITOL (5.0/5.0)</strong>
-                        <p style="font-size:12px; margin-top:5px;">"Excelente respuesta ante emergencias."</p>
+                    <div style="background:#f0fdf4; padding:10px; border-left:3px solid #16a34a;">
+                        <strong style="font-size:11px; color:#14532d;">VITOL / OMEGA</strong>
+                        <p style="font-size:12px; margin-top:5px;">"Excelente respuesta ante emergencias y amabilidad del personal."</p>
                     </div>
                 </div>
 
                 <div class="card col-12">
-                    <div class="card-header">4.4 DESEMPEÑO SST & CONTRATISTAS</div>
-                    <div class="grid">
-                        <div class="col-3" style="text-align:center;">
-                            <div class="sub-text">ACCIDENTES</div>
-                            <div class="big-number" style="color:var(--success)">0</div>
+                    <div class="card-title">4.4 SEGURIDAD Y SALUD EN EL TRABAJO (SST)</div>
+                    <div class="grid-container">
+                        <div class="col-3 kpi-box">
+                            <div class="kpi-sub">ACCIDENTES (AT)</div>
+                            <div class="kpi-val" style="color:var(--success)">0</div>
+                            <div class="kpi-sub">Meta Cumplida</div>
                         </div>
-                        <div class="col-3" style="text-align:center;">
-                            <div class="sub-text">SIMULACROS</div>
-                            <div class="big-number" style="font-size:24px; margin-top:15px; color:var(--success)">EFICACES</div>
+                        <div class="col-3 kpi-box">
+                            <div class="kpi-sub">AUSENTISMO</div>
+                            <div class="kpi-val" style="color:var(--warning)">170</div>
+                            <div class="kpi-sub">Días (Origen Común)</div>
                         </div>
                         <div class="col-6">
-                            <div class="alert-box">
-                                <strong style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> HALLAZGO CONTRATISTA (ASETCO)</strong>
-                                <p style="font-size:12px; margin-top:5px;">
-                                    <strong>Sede:</strong> La Paz | <strong>Evento:</strong> Positivo Alcoholimetría.<br>
-                                    <strong>Gestión:</strong> Restricción de ingreso inmediata. Control eficaz.
-                                </p>
-                            </div>
+                            <div class="card-title" style="border:none;">GESTIÓN CRÍTICA</div>
+                            <ul style="font-size:13px; line-height:1.6;">
+                                <li><span class="tag tag-ok">SIMULACROS</span> Ejecutados y eficaces en 5 sedes.</li>
+                                <li><span class="tag tag-ok">EXÁMENES MÉDICOS</span> Cobertura del 100%.</li>
+                                <li><span class="tag tag-err">CONTRATISTAS</span> <strong>Hallazgo ASETCO (La Paz):</strong> Positivo en Alcoholimetría. Se aplicó restricción de acceso.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card col-6">
-                    <div class="card-header">4.3 GESTIÓN AMBIENTAL</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="font-size:12px;">Consumo Agua</span>
-                        <div style="width:60%; height:8px; background:#333; border-radius:4px;"><div style="width:90%; height:100%; background:var(--success); border-radius:4px;"></div></div>
-                        <span style="font-size:11px;">CUMPLE</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px;">Residuos (Aprov)</span>
-                        <div style="width:60%; height:8px; background:#333; border-radius:4px;"><div style="width:75%; height:100%; background:var(--warning); border-radius:4px;"></div></div>
-                        <span style="font-size:11px;">75%</span>
-                    </div>
+                    <div class="card-title">4.2 PROVEEDORES</div>
+                    <p style="font-size:13px;"><strong>Total Evaluados:</strong> 20 Proveedores Críticos (Est).</p>
+                    <p style="font-size:13px;"><strong>Calificación Promedio:</strong> 95% (Estimado).</p>
+                    <p style="font-size:13px; margin-top:5px;"><strong>Acciones:</strong> No se registraron proveedores con calificación deficiente que afectaran la operación.</p>
                 </div>
-
+                
                 <div class="card col-6">
-                    <div class="card-header">4.2 PROVEEDORES</div>
-                    <div style="display:flex; gap:20px; align-items:center;">
-                        <div class="big-number" style="font-size:32px;">95%</div>
-                        <div style="font-size:12px; color:var(--text-dim);">
-                            Promedio Calificación 2025.<br>
-                            Evaluados: 20 Proveedores Críticos.
-                        </div>
-                    </div>
+                    <div class="card-title">4.5 PLAN ESTRATÉGICO SEGURIDAD VIAL</div>
+                    <div class="info-row"><span class="info-label">Siniestros Viales:</span> <span class="tag tag-ok">0 EVENTOS</span></div>
+                    <div class="info-row"><span class="info-label">Mantenimiento Flota:</span> <span class="tag tag-ok">100% CUMPLE</span></div>
+                    <div class="info-row"><span class="info-label">Capacitación:</span> <span class="tag tag-ok">100% CUMPLE</span></div>
+                    <p style="font-size:12px; margin-top:5px; color:#64748b;">*Innovación: Inspecciones preoperacionales digitales vía AppScript.</p>
                 </div>
             </div>
         </div>
 
-        <div id="sec5" class="section">
+        <div id="sec5" class="section-view">
             <div class="card">
-                <div class="card-header">5.3 MAPA DE HALLAZGOS POR SEDE (MATRIZ DE CALOR)</div>
-                <table>
+                <div class="card-title">5.3 MATRIZ DETALLADA DE HALLAZGOS POR SEDE</div>
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Sede / Proyecto</th>
                             <th>Inspecciones</th>
                             <th>Mediciones Higiénicas</th>
-                            <th>Hallazgos Críticos</th>
+                            <th>Hallazgos Críticos Abiertos</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong style="color:var(--success)">SINÚ 9</strong></td>
-                            <td><span class="pill bg-ok">100% OK</span></td>
-                            <td><span class="pill bg-ok">REALIZADAS</span></td>
-                            <td>0</td>
+                            <td><strong>SINÚ 9</strong></td>
+                            <td><span class="tag tag-err">20% CIERRE</span> (Bajo)</td>
+                            <td><span class="tag tag-ok">REALIZADAS</span></td>
+                            <td>Represamiento de acciones post-simulacro.</td>
                         </tr>
                         <tr>
-                            <td><strong style="color:var(--warning)">BUENAVISTA</strong></td>
-                            <td><span class="pill bg-ok">100% OK</span></td>
-                            <td><span class="pill bg-ok">REALIZADAS</span></td>
-                            <td><span class="pill bg-warn">1 EN PROCESO</span> (Locativo)</td>
+                            <td><strong>BUENAVISTA</strong></td>
+                            <td><span class="tag tag-ok">91% CIERRE</span></td>
+                            <td><span class="tag tag-ok">REALIZADAS</span></td>
+                            <td>1 Hallazgo (Locativo Contenedor).</td>
                         </tr>
                         <tr>
-                            <td><strong style="color:var(--danger)">CORRALES</strong></td>
-                            <td><span class="pill bg-ok">100% OK</span></td>
-                            <td><span class="pill bg-err">PENDIENTE</span></td>
-                            <td><span class="pill bg-err">CRÍTICO</span> (Dotación/Alturas)</td>
+                            <td><strong>CORRALES</strong></td>
+                            <td><span class="tag tag-ok">100% EJECUCIÓN</span></td>
+                            <td><span class="tag tag-err">PENDIENTE</span></td>
+                            <td><span class="tag tag-err">CRÍTICO:</span> Dotación Invierno y Certif. Alturas.</td>
                         </tr>
                         <tr>
-                            <td><strong style="color:var(--warning)">LA PAZ</strong></td>
-                            <td><span class="pill bg-ok">100% OK</span></td>
-                            <td><span class="pill bg-err">PENDIENTE</span></td>
-                            <td><span class="pill bg-warn">1 ABIERTO</span> (Lavaojos)</td>
+                            <td><strong>LA PAZ</strong></td>
+                            <td><span class="tag tag-ok">100% EJECUCIÓN</span></td>
+                            <td><span class="tag tag-err">PENDIENTE</span></td>
+                            <td>1 Hallazgo (Lavaojos). Incumplimiento ASETCO.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SAN CARLOS</strong></td>
+                            <td><span class="tag tag-info">AUDITORÍA CLIENTE</span></td>
+                            <td>N/A</td>
+                            <td>Riesgo Biológico (Fiebre Amarilla).</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <div id="sec6" class="section">
-            <div class="grid">
-                <div class="col-12">
-                    <div class="card" style="background: linear-gradient(145deg, rgba(243, 156, 18, 0.1), transparent); border: 1px solid var(--accent);">
-                        <div class="card-header" style="color:var(--accent); font-size:14px;">
-                            <i class="fa-solid fa-stamp"></i> DECISIONES DE INVERSIÓN APROBADAS
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Área Responsable</th>
-                                    <th>Inversión / Proyecto</th>
-                                    <th>Justificación (Origen)</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>OPERACIONES</td>
-                                    <td><strong>Implementación Mantenimiento Predictivo</strong></td>
-                                    <td>Cliente INFRAES (Cap. 4)</td>
-                                    <td><span class="pill bg-ok">APROBADO Q1</span></td>
-                                </tr>
-                                <tr>
-                                    <td>COMPRAS / HSEQ</td>
-                                    <td><strong>Compra Urgente:</strong> Dotación Invierno (Corrales) + Certif. Alturas</td>
-                                    <td>Hallazgo Crítico (Cap. 5)</td>
-                                    <td><span class="pill bg-ok">APROBADO</span></td>
-                                </tr>
-                                <tr>
-                                    <td>HSEQ</td>
-                                    <td>Ejecución Mediciones Higiénicas (Corrales, La Paz, Eveca)</td>
-                                    <td>Requisito Legal</td>
-                                    <td><span class="pill bg-ok">APROBADO FEB</span></td>
-                                </tr>
-                                <tr>
-                                    <td>G. HUMANA</td>
-                                    <td>Formalización Teletrabajo + Vacunas</td>
-                                    <td>Legal / Matriz</td>
-                                    <td><span class="pill bg-ok">APROBADO</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+            
+            <div class="grid-container" style="margin-top:20px;">
+                <div class="card col-12">
+                    <div class="card-title">5.2 RESULTADOS DE AUDITORÍAS</div>
+                    <div class="grid-container">
+                        <div class="col-4"><strong>Auditoría Interna HSEQ:</strong> 0 NC, 8 Oportunidades Mejora.</div>
+                        <div class="col-4"><strong>Auditoría Externa BV:</strong> Certificación Mantenida (0 NC Mayores).</div>
+                        <div class="col-4"><strong>NORSOK S-006:</strong> <span class="tag tag-ok">95.38%</span> Sobresaliente.</div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-12">
-                    <div class="card" style="text-align:center; padding:40px;">
-                        <h2 style="color:#fff; margin-bottom:10px;">CONCLUSIÓN GERENCIAL 2025</h2>
-                        <p style="font-size:16px; color:#aaa; font-style:italic;">
-                            "El Sistema Integrado de Gestión es <strong style="color:var(--success)">CONVENIENTE, ADECUADO y EFICAZ</strong>, alineado con la estrategia de digitalización."
-                        </p>
-                        <div style="margin-top:40px; display:flex; justify-content:center; gap:60px;">
-                            <div style="border-top:1px solid #555; width:200px; padding-top:10px; font-size:12px;">GERENTE GENERAL</div>
-                            <div style="border-top:1px solid #555; width:200px; padding-top:10px; font-size:12px;">DIRECTOR HSEQ</div>
-                        </div>
-                    </div>
+        <div id="sec6" class="section-view">
+            <div class="card" style="border: 2px solid var(--primary);">
+                <div class="card-title" style="color:var(--primary); font-size:14px;">6. SALIDAS DE LA REVISIÓN: DECISIONES Y ASIGNACIÓN DE RECURSOS</div>
+                
+                <h4 style="font-size:13px; margin:15px 0 10px 0; color:#334155;">6.1 DECISIONES ESTRATÉGICAS APROBADAS</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Proceso</th>
+                            <th>Decisión / Inversión</th>
+                            <th>Justificación</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OPERACIONES</td>
+                            <td><strong>Implementación Mantenimiento Predictivo</strong></td>
+                            <td>Solicitud Cliente INFRAES</td>
+                            <td><span class="tag tag-ok">APROBADO Q1</span></td>
+                        </tr>
+                        <tr>
+                            <td>HSEQ / COMPRAS</td>
+                            <td><strong>Compra Inmediata:</strong> Dotación Invierno (Corrales), Certif. Alturas y Lavaojos (La Paz).</td>
+                            <td>Hallazgos Críticos Cap. 5</td>
+                            <td><span class="tag tag-ok">APROBADO</span></td>
+                        </tr>
+                        <tr>
+                            <td>HSEQ</td>
+                            <td><strong>Mediciones Higiénicas:</strong> Ejecutar en Corrales, La Paz y Eveca.</td>
+                            <td>Incumplimiento Legal</td>
+                            <td><span class="tag tag-ok">APROBADO FEB</span></td>
+                        </tr>
+                        <tr>
+                            <td>G. HUMANA</td>
+                            <td><strong>Formalización Teletrabajo</strong> y Vacunación Fiebre Amarilla.</td>
+                            <td>Requisito Legal</td>
+                            <td><span class="tag tag-ok">APROBADO</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 style="font-size:13px; margin:20px 0 10px 0; color:#334155;">6.2 ASIGNACIÓN DE RECURSOS 2026</h4>
+                <ul style="font-size:13px; line-height:1.8; list-style-type:square; padding-left:20px;">
+                    <li><strong>Infraestructura:</strong> Compra de repuestos críticos y mantenimiento servidores. <span class="tag tag-info">APROBADO</span></li>
+                    <li><strong>Talento Humano:</strong> Continuidad planta personal y Plan de Capacitación. <span class="tag tag-info">APROBADO</span></li>
+                    <li><strong>Presupuesto HSEQ:</strong> Ejecución plan anual (EPP, exámenes, monitoreos). <span class="tag tag-info">APROBADO</span></li>
+                </ul>
+
+                <div style="background:#f1f5f9; padding:20px; text-align:center; margin-top:30px; border-radius:8px;">
+                    <h3 style="font-size:16px; margin-bottom:10px;">6.3 CONCLUSIÓN DE LA GERENCIA</h3>
+                    <p style="font-size:14px; color:#475569;">"La Gerencia General concluye que el Sistema Integrado de Gestión es <strong>CONVENIENTE, ADECUADO y EFICAZ</strong>, alineado con la estrategia de transformación digital y los objetivos ESG."</p>
+                </div>
+
+                <div class="signature-box">
+                    <div class="sign-line">GERENTE GENERAL<br><span style="font-weight:400; font-size:10px;">Luis Eduardo Henriquez</span></div>
+                    <div class="sign-line">DIRECTOR HSEQ<br><span style="font-weight:400; font-size:10px;">Carlos Esteban</span></div>
                 </div>
             </div>
         </div>
@@ -464,38 +530,38 @@
 
     <script>
         // Navegación
-        function nav(secIndex, btn) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            // Mostrar la seleccionada
+        function navigate(secIndex, btn) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
             document.getElementById('sec' + secIndex).classList.add('active');
             
-            // Actualizar menú
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             btn.classList.add('active');
         }
 
         // Gráfico Clientes
-        const ctx = document.getElementById('chartSat').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Vitol', 'Omega', 'Kronos', 'Refigas', 'INFRAES'],
-                datasets: [{
-                    label: 'Calificación',
-                    data: [5.0, 4.8, 4.5, 4.2, 3.0],
-                    backgroundColor: ['#27ae60', '#27ae60', '#27ae60', '#2980b9', '#c0392b'],
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: {display: false} },
-                scales: {
-                    y: { beginAtZero: true, max: 5, grid: {color: 'rgba(255,255,255,0.05)'} },
-                    x: { grid: {display: false} }
+        window.onload = function() {
+            const ctx = document.getElementById('chartClientes').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vitol', 'Omega', 'Kronos', 'Refigas', 'INFRAES'],
+                    datasets: [{
+                        label: 'Satisfacción 2025',
+                        data: [5.0, 4.8, 4.5, 4.2, 3.0],
+                        backgroundColor: ['#10b981', '#10b981', '#10b981', '#3b82f6', '#ef4444'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: {display: false} },
+                    scales: { y: { beginAtZero: true, max: 5 } }
                 }
-            }
+            });
+        };
+    </script>
+</body>
+</html>
         });
     </script>
 </body>
