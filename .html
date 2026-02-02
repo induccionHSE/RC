@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGC Dashboard | PBI 2025</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #0f172a; /* Azul Petróleo */
+            --accent: #f59e0b;  /* Dorado Oil & Gas */
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f97316;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
+        body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px; background: var(--primary); color: white; display: flex; flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1); z-index: 10;
+        }
+        .logo-area { padding: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo-area h1 { font-family: 'Oswald', sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--accent); }
+        .logo-area p { font-size: 11px; opacity: 0.7; margin-top: 5px; }
+
+        .nav-menu { flex-grow: 1; padding: 20px 0; }
+        .nav-btn {
+            width: 100%; padding: 18px 30px; background: none; border: none; color: rgba(255,255,255,0.7);
+            text-align: left; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .nav-btn:hover, .nav-btn.active { background: rgba(255,255,255,0.05); color: var(--accent); border-right: 4px solid var(--accent); }
+        .nav-btn i { width: 20px; text-align: center; }
+
+        .footer-info { padding: 20px; font-size: 10px; opacity: 0.4; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* MAIN CONTENT */
+        .main { flex-grow: 1; overflow-y: auto; padding: 40px; position: relative; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-title h2 { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .page-title span { color: #64748b; font-size: 14px; font-weight: 500; }
+        .status-badge { background: #dbeafe; color: #1e40af; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+
+        /* GRID SYSTEM */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 30px; }
+        .col-2 { grid-column: span 2; }
+        .col-4 { grid-column: span 4; }
+
+        /* CARDS */
+        .card { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; height: 100%; }
+        .card-head { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .card-title { font-size: 14px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* KPI BOXES */
+        .kpi-val { font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 500; color: var(--primary); margin: 10px 0; }
+        .kpi-trend { font-size: 12px; display: flex; align-items: center; gap: 5px; font-weight: 600; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-neutral { color: var(--warning); }
+
+        /* TABLES */
+        .table-container { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table-container th { text-align: left; padding: 12px; background: #f8fafc; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+        .table-container td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-red { background: #fee2e2; color: #991b1b; }
+        .bg-yellow { background: #fef9c3; color: #854d0e; }
+        .bg-blue { background: #dbeafe; color: #1e40af; }
+
+        /* SECTIONS (Tabs) */
+        .section-view { display: none; animation: fadeIn 0.4s ease; }
+        .section-view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">
+            <h1>PBI S.A.S <span style="color:white; font-size:12px;">ESP</span></h1>
+            <p>Sistema Integrado de Gestión</p>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-btn active" onclick="showTab('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard General</button>
+            <button class="nav-btn" onclick="showTab('strategy', this)"><i class="fa-solid fa-chess"></i> Estrategia y Contexto</button>
+            <button class="nav-btn" onclick="showTab('ops', this)"><i class="fa-solid fa-helmet-safety"></i> Operaciones SST</button>
+            <button class="nav-btn" onclick="showTab('decisions', this)"><i class="fa-solid fa-money-bill-transfer"></i> Decisiones & Inversión</button>
+        </div>
+        <div class="footer-info">
+            REVISIÓN POR LA DIRECCIÓN v.2025<br>
+            Generado: 30/01/2026
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <div class="page-title">
+                <span id="header-subtitle">Informe Ejecutivo</span>
+                <h2 id="header-title">Resumen del Desempeño 2025</h2>
+            </div>
+            <div class="status-badge"><i class="fa-solid fa-check-circle"></i> SISTEMA CONFORME</div>
+        </div>
+
+        <div id="dashboard" class="section-view active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-title">Satisfacción Cliente</div>
+                    <div class="kpi-val">86%</div>
+                    <div class="kpi-trend trend-neutral"><i class="fa-solid fa-minus"></i> Promedio 4.3/5.0</div>
+                    <div style="margin-top:10px; font-size:11px; color:#64748b;">Meta >85% Cumplida</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Accidentalidad</div>
+                    <div class="kpi-val" style="color:var(--success);">0</div>
+                    <div class="kpi-trend trend-up"><i class="fa-solid fa-shield-halved"></i> Cero Eventos</div>
+                    <div style="margin-top:10px; font-size:11px; color:#64748b;">IF Meta < 1.0</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Cumplimiento Legal</div>
+                    <div class="kpi-val">97.7%</div>
+                    <div class="kpi-trend trend-up"><i class="fa-solid fa-arrow-up"></i> Sube 1.4% vs 2024</div>
+                    <div style="margin-top:10px; font-size:11px; color:#64748b;">Sin Multas / Sanciones</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Eficacia Cierres</div>
+                    <div class="kpi-val" style="color:var(--danger);">39%</div>
+                    <div class="kpi-trend trend-down"><i class="fa-solid fa-triangle-exclamation"></i> Bajo Cierre</div>
+                    <div style="margin-top:10px; font-size:11px; color:#64748b;">Represado en Sinú 9</div>
+                </div>
+
+                <div class="card col-2">
+                    <div class="card-head">
+                        <div class="card-title">Satisfacción por Cliente (Top 5)</div>
+                    </div>
+                    <canvas id="chartSatisfaction" height="150"></canvas>
+                </div>
+
+                <div class="card col-2">
+                    <div class="card-head">
+                        <div class="card-title">Estado de Hallazgos por Sede</div>
+                    </div>
+                    <canvas id="chartFindings" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="strategy" class="section-view">
+            <div class="dashboard-grid">
+                <div class="card col-4">
+                    <div class="card-head"><div class="card-title">Análisis de Contexto (DOFA 2025)</div></div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div style="background:#f0fdf4; padding:15px; border-radius:8px; border-left:4px solid var(--success);">
+                            <h4 style="color:#166534; margin-bottom:5px;"><i class="fa-solid fa-arrow-trend-up"></i> OPORTUNIDADES</h4>
+                            <ul style="font-size:13px; color:#334155; padding-left:20px;">
+                                <li>Incentivos tributarios Transición Energética.</li>
+                                <li>Nuevas tecnologías de monitoreo remoto (IoT).</li>
+                                <li>Apertura de mercado regional Andino.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#fef2f2; padding:15px; border-radius:8px; border-left:4px solid var(--danger);">
+                            <h4 style="color:#991b1b; margin-bottom:5px;"><i class="fa-solid fa-ban"></i> AMENAZAS</h4>
+                            <ul style="font-size:13px; color:#334155; padding-left:20px;">
+                                <li>Volatilidad macroeconómica (TRM).</li>
+                                <li>Bloqueos sociales en zonas operativas.</li>
+                                <li>Ciberataques a infraestructura crítica.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card col-4">
+                    <div class="card-head"><div class="card-title">Voz del Cliente (Análisis Cualitativo)</div></div>
+                    <table class="table-container">
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Calificación</th>
+                            <th>Feedback Clave</th>
+                            <th>Acción Requerida</th>
+                        </tr>
+                        <tr>
+                            <td>INFRAES</td>
+                            <td><span class="badge bg-yellow">3.0</span></td>
+                            <td>"Demasiado reactivos. Necesitamos mantenimiento predictivo."</td>
+                            <td><span class="badge bg-blue">PROYECTO Q1-2026</span></td>
+                        </tr>
+                        <tr>
+                            <td>VITOL</td>
+                            <td><span class="badge bg-green">5.0</span></td>
+                            <td>"Excelente respuesta ante emergencias."</td>
+                            <td>Mantener Estándar</td>
+                        </tr>
+                        <tr>
+                            <td>OMEGA</td>
+                            <td><span class="badge bg-green">4.5</span></td>
+                            <td>"Personal muy amable y competente."</td>
+                            <td>Incentivos Personal</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="ops" class="section-view">
+            <div class="dashboard-grid">
+                <div class="card col-4">
+                    <div class="card-head"><div class="card-title">Mapa de Calor Operativo (Inspecciones & Riesgos)</div></div>
+                    <table class="table-container">
+                        <tr>
+                            <th>Sede / Proyecto</th>
+                            <th>Inspecciones</th>
+                            <th>Simulacros</th>
+                            <th>Mediciones Hig.</th>
+                            <th>Hallazgos Críticos</th>
+                        </tr>
+                        <tr>
+                            <td><strong>SINÚ 9</strong></td>
+                            <td><span class="badge bg-green">100% OK</span></td>
+                            <td><span class="badge bg-green">EFICAZ</span></td>
+                            <td><span class="badge bg-green">REALIZADAS</span></td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BUENAVISTA</strong></td>
+                            <td><span class="badge bg-green">100% OK</span></td>
+                            <td><span class="badge bg-green">EFICAZ</span></td>
+                            <td><span class="badge bg-green">REALIZADAS</span></td>
+                            <td>1 (Locativo)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CORRALES</strong></td>
+                            <td><span class="badge bg-green">100% OK</span></td>
+                            <td><span class="badge bg-green">EFICAZ</span></td>
+                            <td><span class="badge bg-red">PENDIENTE</span></td>
+                            <td><span class="badge bg-red">CRÍTICO (Dotación/Alturas)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>LA PAZ</strong></td>
+                            <td><span class="badge bg-green">100% OK</span></td>
+                            <td><span class="badge bg-green">EFICAZ</span></td>
+                            <td><span class="badge bg-red">PENDIENTE</span></td>
+                            <td>1 (Lavaojos)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card col-2">
+                    <div class="card-head"><div class="card-title">Gestión de Contratistas</div></div>
+                    <div style="background:#fff7ed; padding:15px; border-radius:8px; border:1px solid #ffedd5;">
+                        <h3 style="color:#c2410c; font-size:14px; margin-bottom:5px;"><i class="fa-solid fa-triangle-exclamation"></i> INCUMPLIMIENTO DETECTADO</h3>
+                        <p style="font-size:12px; margin-bottom:5px;"><strong>Proyecto:</strong> La Paz | <strong>Empresa:</strong> ASETCO</p>
+                        <p style="font-size:12px;"><strong>Hallazgo:</strong> Resultado positivo en prueba de alcoholimetría al ingreso.</p>
+                        <p style="font-size:12px; margin-top:10px;"><strong>Gestión:</strong> <span class="badge bg-green">ACCESO DENEGADO</span> + Reporte a Gerencia Contratista.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="decisions" class="section-view">
+             <div class="dashboard-grid">
+                <div class="card col-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color:white;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h2 style="font-family:'Oswald'; letter-spacing:1px;">DECISIONES ESTRATÉGICAS 2026</h2>
+                            <p style="opacity:0.7; font-size:13px;">Aprobaciones presupuestales emitidas en la revisión.</p>
+                        </div>
+                        <i class="fa-solid fa-signature" style="font-size:40px; opacity:0.2;"></i>
+                    </div>
+                </div>
+
+                <div class="card col-4">
+                    <table class="table-container">
+                        <tr style="background:#f1f5f9;">
+                            <th>Área Responsable</th>
+                            <th>Inversión / Proyecto Aprobado</th>
+                            <th>Justificación (Origen)</th>
+                            <th>Estado</th>
+                        </tr>
+                        <tr>
+                            <td><strong>OPERACIONES</strong></td>
+                            <td>Implementación Mantenimiento Predictivo (Sensores/Software)</td>
+                            <td>Queja Cliente INFRAES</td>
+                            <td><span class="badge bg-blue">APROBADO Q1</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>HSEQ / COMPRAS</strong></td>
+                            <td>Compra Urgente: Dotación Invierno (Corrales) + Certif. Alturas</td>
+                            <td>Hallazgo Crítico Inspecciones</td>
+                            <td><span class="badge bg-blue">APROBADO INMEDIATO</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>HSEQ</strong></td>
+                            <td>Ejecución Mediciones Higiénicas (Corrales, La Paz, Eveca)</td>
+                            <td>Incumplimiento Legal 2025</td>
+                            <td><span class="badge bg-blue">APROBADO FEB-26</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>G. HUMANA</strong></td>
+                            <td>Formalización Teletrabajo + Vacunación Fiebre Amarilla</td>
+                            <td>Matriz de Requisitos Legales</td>
+                            <td><span class="badge bg-blue">APROBADO</span></td>
+                        </tr>
+                    </table>
+                </div>
+             </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. NAVEGACION ---
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            
+            // Actualizar Titulos Header
+            const titles = {
+                'dashboard': 'Resumen del Desempeño 2025',
+                'strategy': 'Contexto y Estrategia DOFA',
+                'ops': 'Desempeño Operativo y SST',
+                'decisions': 'Decisiones y Recursos'
+            };
+            document.getElementById('header-title').innerText = titles[tabId];
+        }
+
+        // --- 2. GRAFICOS (Chart.js) ---
+        // Esperar a que cargue
+        window.onload = function() {
+            // Chart Satisfacción
+            const ctxSat = document.getElementById('chartSatisfaction').getContext('2d');
+            new Chart(ctxSat, {
+                type: 'bar',
+                data: {
+                    labels: ['Vitol', 'Omega', 'Kronos', 'Refigas', 'Infraes'],
+                    datasets: [{
+                        label: 'Calif. (1-5)',
+                        data: [5.0, 4.8, 4.5, 4.2, 3.0],
+                        backgroundColor: ['#10b981', '#10b981', '#10b981', '#f59e0b', '#ef4444'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: {display: false} },
+                    scales: { y: { beginAtZero: true, max: 5 } }
+                }
+            });
+
+            // Chart Hallazgos
+            const ctxFind = document.getElementById('chartFindings').getContext('2d');
+            new Chart(ctxFind, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cerrados', 'Abiertos (Gestión)', 'Críticos (Presupuesto)'],
+                    datasets: [{
+                        data: [33, 30, 20],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: { legend: {position: 'right'} }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
